@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HEIC to JPG Converter</title>
+</head>
+<body>
+    <h1>HEIC to JPG Converter</h1>
+    <input type="file" id="heicFile" accept=".heic">
+    <button onclick="convertFile()">Convert</button>
+    <a id="downloadLink" style="display: none;">Download JPG</a>
+
+    <script>
+        function convertFile() {
+            var fileInput = document.getElementById('heicFile');
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('heicFile', file);
+
+            fetch('/convert', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                var url = URL.createObjectURL(blob);
+                var downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = url;
+                downloadLink.download = file.name.replace('.heic', '.jpg');
+                downloadLink.style.display = 'block';
+            })
+            .catch(error => console.error(error));
+        }
+    </script>
+</body>
+</html>
